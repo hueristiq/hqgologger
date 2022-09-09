@@ -1,6 +1,6 @@
 # hqgologger
 
-hqgologger is a simple logging package to do structured logging in go.
+A Go (Golang) package for structured logging.
 
 ## Installation
 
