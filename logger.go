@@ -55,7 +55,7 @@ func (logger *Logger) SetWriter(writer writer.Writer) {
 }
 
 func (logger *Logger) Log(event *Event) {
-	if !isCurrentLevelEnabled(event) {
+	if event.level > event.logger.maxLevel {
 		return
 	}
 
@@ -77,11 +77,9 @@ func (logger *Logger) Log(event *Event) {
 
 // Print prints a string on screen without any extra labels.
 func (logger *Logger) Print() *Event {
-	level := levels.Levels[levels.LevelDebug]
-
 	event := &Event{
 		logger:   logger,
-		level:    level,
+		level:    levels.LevelInt(-1),
 		metadata: make(map[string]string),
 	}
 
@@ -194,11 +192,9 @@ func (event *Event) Msgf(format string, args ...interface{}) {
 
 // Print prints a string on screen without any extra labels.
 func Print() (event *Event) {
-	level := levels.Levels[levels.LevelDebug]
-
 	event = &Event{
 		logger:   DefaultLogger,
-		level:    level,
+		level:    levels.LevelInt(-1),
 		metadata: make(map[string]string),
 	}
 
@@ -273,8 +269,4 @@ func Fatal() (event *Event) {
 	event.metadata["label"] = labels[level]
 
 	return
-}
-
-func isCurrentLevelEnabled(event *Event) bool {
-	return event.level <= event.logger.maxLevel
 }
