@@ -63,17 +63,17 @@ func (c *CLIFomartter) colorizeLabel(event *Log) {
 	}
 
 	switch event.Level {
-	case levels.LevelSilent:
+	case levels.Levels[levels.LevelSilent]:
 		return
-	case levels.LevelFatal:
+	case levels.Levels[levels.LevelFatal]:
 		event.Metadata["label"] = au.BrightRed(label).Bold().String()
-	case levels.LevelError:
+	case levels.Levels[levels.LevelError]:
 		event.Metadata["label"] = au.BrightRed(label).Bold().String()
-	case levels.LevelWarning:
+	case levels.Levels[levels.LevelWarning]:
 		event.Metadata["label"] = au.BrightYellow(label).Bold().String()
-	case levels.LevelInfo:
+	case levels.Levels[levels.LevelInfo]:
 		event.Metadata["label"] = au.BrightBlue(label).Bold().String()
-	case levels.LevelDebug:
+	case levels.Levels[levels.LevelDebug]:
 		event.Metadata["label"] = au.BrightMagenta(label).Bold().String()
 	}
 }

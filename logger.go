@@ -13,12 +13,12 @@ import (
 var (
 	DefaultLogger *Logger
 
-	labels = map[levels.Level]string{
-		levels.LevelFatal:   "FTL",
-		levels.LevelError:   "ERR",
-		levels.LevelWarning: "WRN",
-		levels.LevelInfo:    "INF",
-		levels.LevelDebug:   "DBG",
+	labels = map[levels.LevelInt]string{
+		levels.Levels[levels.LevelFatal]:   "FTL",
+		levels.Levels[levels.LevelError]:   "ERR",
+		levels.Levels[levels.LevelWarning]: "WRN",
+		levels.Levels[levels.LevelInfo]:    "INF",
+		levels.Levels[levels.LevelDebug]:   "DBG",
 	}
 )
 
@@ -34,14 +34,14 @@ func init() {
 
 // Logger is the logger for logging structured data.
 type Logger struct {
-	maxLevel  levels.Level
+	maxLevel  levels.LevelInt
 	formatter formatter.Formatter
 	writer    writer.Writer
 }
 
 // SetMaxLevel sets the max logging level for logger
-func (logger *Logger) SetMaxLevel(level levels.Level) {
-	logger.maxLevel = level
+func (logger *Logger) SetMaxLevel(level levels.LevelStr) {
+	logger.maxLevel = levels.Levels[level]
 }
 
 // SetFormatter sets the formatter instance for a logger
@@ -70,14 +70,15 @@ func (logger *Logger) Log(event *Event) {
 	}
 	logger.writer.Write(data, event.level)
 
-	if event.level == levels.LevelFatal {
+	if event.level == levels.Levels[levels.LevelFatal] {
 		os.Exit(1)
 	}
 }
 
 // Print prints a string on screen without any extra labels.
 func (logger *Logger) Print() *Event {
-	level := levels.LevelDebug
+	level := levels.Levels[levels.LevelDebug]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -89,7 +90,8 @@ func (logger *Logger) Print() *Event {
 
 // Debug writes an error message on the screen with the default label
 func (logger *Logger) Debug() *Event {
-	level := levels.LevelDebug
+	level := levels.Levels[levels.LevelDebug]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -102,7 +104,8 @@ func (logger *Logger) Debug() *Event {
 
 // Info writes a info message on the screen with the default label
 func (logger *Logger) Info() *Event {
-	level := levels.LevelInfo
+	level := levels.Levels[levels.LevelInfo]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -115,7 +118,8 @@ func (logger *Logger) Info() *Event {
 
 // Warning writes a warning message on the screen with the default label
 func (logger *Logger) Warning() *Event {
-	level := levels.LevelWarning
+	level := levels.Levels[levels.LevelWarning]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -128,7 +132,8 @@ func (logger *Logger) Warning() *Event {
 
 // Error writes a error message on the screen with the default label
 func (logger *Logger) Error() *Event {
-	level := levels.LevelError
+	level := levels.Levels[levels.LevelError]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -141,7 +146,8 @@ func (logger *Logger) Error() *Event {
 
 // Fatal exits the program if we encounter a fatal error
 func (logger *Logger) Fatal() *Event {
-	level := levels.LevelFatal
+	level := levels.Levels[levels.LevelFatal]
+
 	event := &Event{
 		logger:   logger,
 		level:    level,
@@ -155,7 +161,7 @@ func (logger *Logger) Fatal() *Event {
 // Event is a log event to be written with data
 type Event struct {
 	logger   *Logger
-	level    levels.Level
+	level    levels.LevelInt
 	message  string
 	metadata map[string]string
 }
@@ -163,12 +169,14 @@ type Event struct {
 // Label applies a custom label on the log event
 func (event *Event) Label(label string) *Event {
 	event.metadata["label"] = label
+
 	return event
 }
 
 // Str adds a string metadata item to the log
 func (event *Event) Str(key, value string) *Event {
 	event.metadata[key] = value
+
 	return event
 }
 
@@ -186,7 +194,8 @@ func (event *Event) Msgf(format string, args ...interface{}) {
 
 // Print prints a string on screen without any extra labels.
 func Print() (event *Event) {
-	level := levels.LevelDebug
+	level := levels.Levels[levels.LevelDebug]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,
@@ -198,7 +207,8 @@ func Print() (event *Event) {
 
 // Debug writes an error message on the screen with the default label
 func Debug() (event *Event) {
-	level := levels.LevelDebug
+	level := levels.Levels[levels.LevelDebug]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,
@@ -211,7 +221,8 @@ func Debug() (event *Event) {
 
 // Info writes a info message on the screen with the default label
 func Info() (event *Event) {
-	level := levels.LevelInfo
+	level := levels.Levels[levels.LevelInfo]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,
@@ -224,7 +235,8 @@ func Info() (event *Event) {
 
 // Warning writes a warning message on the screen with the default label
 func Warning() (event *Event) {
-	level := levels.LevelWarning
+	level := levels.Levels[levels.LevelWarning]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,
@@ -237,7 +249,8 @@ func Warning() (event *Event) {
 
 // Error writes a error message on the screen with the default label
 func Error() (event *Event) {
-	level := levels.LevelError
+	level := levels.Levels[levels.LevelError]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,
@@ -250,7 +263,8 @@ func Error() (event *Event) {
 
 // Fatal exits the program if we encounter a fatal error
 func Fatal() (event *Event) {
-	level := levels.LevelFatal
+	level := levels.Levels[levels.LevelFatal]
+
 	event = &Event{
 		logger:   DefaultLogger,
 		level:    level,

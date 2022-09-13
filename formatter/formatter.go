@@ -4,7 +4,7 @@ import "github.com/hueristiq/hqgologger/levels"
 
 type Log struct {
 	Message  string
-	Level    levels.Level
+	Level    levels.LevelInt
 	Metadata map[string]string
 }
 
