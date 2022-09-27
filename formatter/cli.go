@@ -25,19 +25,18 @@ func NewCLIFomartter(options *CLIFomartterOptions) *CLIFomartter {
 	return &CLIFomartter{}
 }
 
-func (c *CLIFomartter) Format(event *Log) ([]byte, error) {
+func (c *CLIFomartter) Format(event *Log) (data []byte, err error) {
 	c.colorizeLabel(event)
 
 	buffer := &bytes.Buffer{}
 	buffer.Grow(len(event.Message))
 
-	label, ok := event.Metadata["label"]
-	if label != "" && ok {
+	if label, ok := event.Metadata["label"]; ok && label != "" {
 		buffer.WriteRune('[')
 		buffer.WriteString(label)
 		buffer.WriteRune(']')
 		buffer.WriteRune(' ')
-		delete(event.Metadata, "label")
+		// delete(event.Metadata, "label")
 	}
 	buffer.WriteString(event.Message)
 
@@ -47,8 +46,9 @@ func (c *CLIFomartter) Format(event *Log) ([]byte, error) {
 	// 	buffer.WriteRune('=')
 	// 	buffer.WriteString(v)
 	// }
-	data := buffer.Bytes()
-	return data, nil
+	data = buffer.Bytes()
+
+	return
 }
 
 // func (c *CLIFomartter) colorizeKey(key string) string {

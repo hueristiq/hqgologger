@@ -72,14 +72,7 @@ func (logger *Logger) Log(event *Event) {
 	}
 
 	if character, ok := event.metadata["rest"]; ok {
-		dataStr := string(data)
-		dataLen := len(dataStr)
-
-		width, _, _ := term.GetSize(0)
-
-		dataStr = dataStr + strings.Repeat(character, width-dataLen)
-
-		data = []byte(dataStr)
+		data = appendRest(data, character)
 	}
 
 	logger.writer.Write(data, event.level)
@@ -292,4 +285,15 @@ func Fatal() (event *Event) {
 	event.metadata["label"] = labels[level]
 
 	return
+}
+
+func appendRest(data []byte, character string) []byte {
+	dataStr := string(data)
+	dataLen := len(dataStr)
+
+	width, _, _ := term.GetSize(0)
+
+	dataStr = dataStr + strings.Repeat(character[0:1], width-dataLen)
+
+	return []byte(dataStr)
 }
