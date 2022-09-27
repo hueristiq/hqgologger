@@ -41,19 +41,19 @@ func (c *CLIFomartter) Format(event *Log) ([]byte, error) {
 	}
 	buffer.WriteString(event.Message)
 
-	for k, v := range event.Metadata {
-		buffer.WriteRune(' ')
-		buffer.WriteString(c.colorizeKey(k))
-		buffer.WriteRune('=')
-		buffer.WriteString(v)
-	}
+	// for k, v := range event.Metadata {
+	// 	buffer.WriteRune(' ')
+	// 	buffer.WriteString(c.colorizeKey(k))
+	// 	buffer.WriteRune('=')
+	// 	buffer.WriteString(v)
+	// }
 	data := buffer.Bytes()
 	return data, nil
 }
 
-func (c *CLIFomartter) colorizeKey(key string) string {
-	return au.Bold(key).String()
-}
+// func (c *CLIFomartter) colorizeKey(key string) string {
+// 	return au.Bold(key).String()
+// }
 
 func (c *CLIFomartter) colorizeLabel(event *Log) {
 	label := event.Metadata["label"]
