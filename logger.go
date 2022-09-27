@@ -8,6 +8,7 @@ import (
 	"github.com/hueristiq/hqgologger/formatter"
 	"github.com/hueristiq/hqgologger/levels"
 	"github.com/hueristiq/hqgologger/writer"
+	"golang.org/x/term"
 )
 
 var (
@@ -60,6 +61,7 @@ func (logger *Logger) Log(event *Event) {
 	}
 
 	event.message = strings.TrimSuffix(event.message, "\n")
+
 	data, err := logger.formatter.Format(&formatter.Log{
 		Message:  event.message,
 		Level:    event.level,
@@ -68,6 +70,18 @@ func (logger *Logger) Log(event *Event) {
 	if err != nil {
 		return
 	}
+
+	if character, ok := event.metadata["rest"]; ok {
+		dataStr := string(data)
+		dataLen := len(dataStr)
+
+		width, _, _ := term.GetSize(0)
+
+		dataStr = dataStr + strings.Repeat(character, width-dataLen)
+
+		data = []byte(dataStr)
+	}
+
 	logger.writer.Write(data, event.level)
 
 	if event.level == levels.Levels[levels.LevelFatal] {
@@ -171,6 +185,13 @@ func (event *Event) Label(label string) *Event {
 	return event
 }
 
+// Rest applies a custom label on the log event
+func (event *Event) Rest(character string) *Event {
+	event.metadata["rest"] = character
+
+	return event
+}
+
 // Str adds a string metadata item to the log
 func (event *Event) Str(key, value string) *Event {
 	event.metadata[key] = value
@@ -181,12 +202,14 @@ func (event *Event) Str(key, value string) *Event {
 // Msg logs a message to the logger
 func (event *Event) Msg(message string) {
 	event.message = message
+
 	event.logger.Log(event)
 }
 
 // Msgf logs a printf style message to the logger
 func (event *Event) Msgf(format string, args ...interface{}) {
 	event.message = fmt.Sprintf(format, args...)
+
 	event.logger.Log(event)
 }
 
