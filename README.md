@@ -1,6 +1,6 @@
 # hqgologger
 
-A Go (Golang) package for structured logging.
+A Go (Golang) package for logging.
 
 ## Installation
 
