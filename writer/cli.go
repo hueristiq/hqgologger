@@ -7,21 +7,20 @@ import (
 	"github.com/hueristiq/hqgologger/levels"
 )
 
-type CLIWriter struct{}
+type CLI struct{}
 
 var (
-	_ Writer = &CLIWriter{}
-
+	_     Writer = &CLI{}
 	mutex *sync.Mutex
 )
 
-func NewCLIWriter() *CLIWriter {
+func NewCLI() *CLI {
 	mutex = &sync.Mutex{}
 
-	return &CLIWriter{}
+	return &CLI{}
 }
 
-func (w *CLIWriter) Write(data []byte, level levels.LevelInt) {
+func (w *CLI) Write(data []byte, level levels.LevelInt) {
 	mutex.Lock()
 	defer mutex.Unlock()
 

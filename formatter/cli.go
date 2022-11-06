@@ -7,26 +7,25 @@ import (
 	"github.com/logrusorgru/aurora/v3"
 )
 
-type CLIFomartter struct{}
+type CLI struct{}
 
-type CLIFomartterOptions struct {
+type CLIOptions struct {
 	Colorize bool
 }
 
 var (
-	_ Formatter = &CLIFomartter{}
-
+	_  Formatter     = &CLI{}
 	au aurora.Aurora = aurora.NewAurora(false)
 )
 
-func NewCLIFomartter(options *CLIFomartterOptions) *CLIFomartter {
+func NewCLI(options *CLIOptions) *CLI {
 	au = aurora.NewAurora(options.Colorize)
 
-	return &CLIFomartter{}
+	return &CLI{}
 }
 
-func (c *CLIFomartter) Format(event *Log) (data []byte, err error) {
-	c.colorizeLabel(event)
+func (cli *CLI) Format(event *Log) (data []byte, err error) {
+	cli.colorizeLabel(event)
 
 	buffer := &bytes.Buffer{}
 	buffer.Grow(len(event.Message))
@@ -38,11 +37,12 @@ func (c *CLIFomartter) Format(event *Log) (data []byte, err error) {
 		buffer.WriteRune(' ')
 		// delete(event.Metadata, "label")
 	}
+
 	buffer.WriteString(event.Message)
 
 	// for k, v := range event.Metadata {
 	// 	buffer.WriteRune(' ')
-	// 	buffer.WriteString(c.colorizeKey(k))
+	// 	buffer.WriteString(cli.colorizeKey(k))
 	// 	buffer.WriteRune('=')
 	// 	buffer.WriteString(v)
 	// }
@@ -51,11 +51,11 @@ func (c *CLIFomartter) Format(event *Log) (data []byte, err error) {
 	return
 }
 
-// func (c *CLIFomartter) colorizeKey(key string) string {
+// func (cli *CLI) colorizeKey(key string) string {
 // 	return au.Bold(key).String()
 // }
 
-func (c *CLIFomartter) colorizeLabel(event *Log) {
+func (cli *CLI) colorizeLabel(event *Log) {
 	label := event.Metadata["label"]
 
 	if label == "" {
