@@ -25,11 +25,10 @@ var (
 
 func init() {
 	DefaultLogger = &Logger{}
-	DefaultLogger.SetMaxLevel(levels.LevelInfo)
-	cli := formatter.NewCLIFomartter(&formatter.CLIFomartterOptions{
+	DefaultLogger.SetMaxLevel(levels.LevelDebug)
+	DefaultLogger.SetFormatter(formatter.NewCLIFomartter(&formatter.CLIFomartterOptions{
 		Colorize: true,
-	})
-	DefaultLogger.SetFormatter(cli)
+	}))
 	DefaultLogger.SetWriter(writer.NewCLIWriter())
 }
 
