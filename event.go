@@ -8,10 +8,11 @@ import (
 
 // Event is a log event to be written with data
 type Event struct {
-	logger   *Logger
 	level    levels.LevelInt
 	message  string
 	metadata map[string]string
+
+	logger *Logger
 }
 
 // Label applies a custom label on the log event

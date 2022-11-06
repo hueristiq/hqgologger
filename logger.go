@@ -31,13 +31,13 @@ func (logger *Logger) SetWriter(writer writer.Writer) {
 	logger.writer = writer
 }
 
-// Log uses the Logger to log an Event
+// Log logs an Event
 func (logger *Logger) Log(event *Event) {
 	if event.level > event.logger.maxLevel {
 		return
 	}
 
-	if _, ok := event.metadata["label"]; !ok {
+	if label, ok := event.metadata["label"]; !ok {
 		labels := map[levels.LevelInt]string{
 			levels.Levels[levels.LevelFatal]:   "FTL",
 			levels.Levels[levels.LevelError]:   "ERR",
@@ -46,7 +46,7 @@ func (logger *Logger) Log(event *Event) {
 			levels.Levels[levels.LevelDebug]:   "DBG",
 		}
 
-		if label, ok := labels[event.level]; !ok {
+		if label, ok = labels[event.level]; ok {
 			event.metadata["label"] = label
 		}
 	}
